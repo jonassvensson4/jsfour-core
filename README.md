@@ -1,7 +1,7 @@
 # jsfour-core
 
 ### Features
-* Use fetch() to fetch data directly from the server from the NUI.
+* Use fetch() to fetch data directly from the server to the NUI.
 * Adds a gamemaster that lets you trigger client events from the browser (http:/localhost:30120/jsfour-core/gamemaster?token=password). It's disabled by default in the config.js.
 * Adds a shared folder for images, fonts, javascripts and css files that can be used by other NUIs.
 
