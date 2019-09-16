@@ -9,7 +9,7 @@
 Please don't sell or reupload this resource. Feel free to make forks and post any updates in the original forum thread. Do not create your own thread since it's not a new release.
 
 ### INSTALLATION
-* Install dependencies: <a href="https://github.com/brouznouf/fivem-mysql-async">mysql-async</a>
+* Install dependency: <a href="https://github.com/brouznouf/fivem-mysql-async">mysql-async</a>
 * <a href="https://github.com/jonassvensson4/jsfour-core/releases">Download the resource</a>
 * Add your server IP + port to the <a href="https://github.com/jonassvensson4/jsfour-core/config.js">config</a>.
 * Add `start jsfour-core` to your server.cfg, remember to start it before my other scripts.
