@@ -82,5 +82,5 @@ To make this secure as possible you need to meet the following requirements to b
 
 Regarding the gamemaster you need to have a password, it's recommended to use something good.
 
-If you have any <a href="">suggestions</a> on how to make this more secure, feel free to add it to the suggestions section.
+If you have any <a href="https://github.com/jonassvensson4/jsfour-core/issues">suggestions</a> on how to make this more secure, feel free to add it to the suggestions section.
 
