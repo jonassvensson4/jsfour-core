@@ -6,7 +6,7 @@
 * Adds a shared folder for images, fonts, javascripts and css files that can be used by other NUIs.
 
 ### LICENSE
-Please don't sell or reupload this resource
+Please don't sell or reupload this resource. Feel free to make forks and post any updates in the original forum thread. Do not create your own thread since it's not a new release.
 
 ### INSTALLATION
 * Install dependencies: <a href="https://github.com/brouznouf/fivem-mysql-async">mysql-async</a>
