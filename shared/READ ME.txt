@@ -1,0 +1,1 @@
+The shared folder will be publicly available, don't put any sensitive information in here!

@@ -1,0 +1,49 @@
+<div class="container">
+    <h1>Gamemaster</h1>
+    <div class="row">
+        <ul class="collapsible col s12 m4 l4">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">people</i>Players</div>
+                <div class="collapsible-body">
+                    <ul type="playerID">
+                        <% Object.keys(players).forEach(( k ) => {%>
+                            <li data = <%- k %>><%- `${players[k]} [${k}]` %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="collapsible col s12 m4 l4">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">flash_on</i>Events</div>
+                <div class="collapsible-body">
+                    <ul type="action">
+                        <li data="ragdoll">Ragdoll</li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <div class="col s12 m4 l4">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m6 l6">
+                        <input id="playerID" type="text" spellcheck="false" required>
+                        <label for="playerID">Player ID</label>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <input id="action" type="text" spellcheck="false" required>
+                        <label for="action">Event</label>
+                    </div>
+                </div>
+                <button id="submit-action" class="btn waves-effect col s12">run</button>
+            </form> 
+        </div>
+    </div>
+    
+</div>
+<div id="client">
+    <span id="token"><%- token %></span>
+    <span id="endpoint"><%- endpoint %></span>
+</div>
+<link rel="stylesheet" href="views/gamemaster/gamemaster.css">
+<script src="views/gamemaster/gamemaster.js" type="text/javascript"></script>
