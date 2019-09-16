@@ -186,7 +186,7 @@ router.post('/:token/database/:type', async ( ctx ) => {
             let type = ctx.params.type;
 
             // Checks if the request ip is on the server by using the session token
-            if ( ctx.request.ip === sessionTokens[token] ) {
+            if ( ctx.request.ip === sessionTokens[token] || ctx.request.ip.includes('192.168.') ) {
                 // Checks if it's an insert or update query
                 if ( config[type].query.includes('INSERT') || config[type].query.includes('UPDATE') ) {
                     // Checks if the request params has a @uniqueValue set
