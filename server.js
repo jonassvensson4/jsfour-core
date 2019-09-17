@@ -220,15 +220,15 @@ router.post('/:token/database/:type', async ( ctx ) => {
                 }
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied';
+                ctx.body = 'Access denied - IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
-            ctx.body = 'Access denied';
+            ctx.body = `Access denied - Accessed from debugger or somewhere else`;
         }
     } else {
         // Request didn't have any origin, probably accessed from somewhere else
-        ctx.body = 'Access denied';
+        ctx.body = `Access denied - Request had no origin`;
     }
 });
 
@@ -286,15 +286,15 @@ router.post('/:token/emitNet/:job', async ( ctx ) => {
                 }
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied';
+                ctx.body = 'Access denied - IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
-            ctx.body = 'Access denied';
+            ctx.body = `Access denied - Accessed from debugger or somewhere else`;
         }
     } else {
         // Request didn't have any origin, probably accessed from somewhere else
-        ctx.body = 'Access denied';
+        ctx.body = `Access denied - Request had no origin`;
     }
 });
 
@@ -317,15 +317,15 @@ router.post('/:token/serverevent/:event', async ( ctx ) => {
                 // Add your events in here
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied';
+                ctx.body = 'Access denied - IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
-            ctx.body = 'Access denied';
+            ctx.body = `Access denied - Accessed from debugger or somewhere else`;
         }
     } else {
         // Request didn't have any origin, probably accessed from somewhere else
-        ctx.body = 'Access denied';
+        ctx.body = `Access denied - Request had no origin`;
     }
 });
 
