@@ -1,4 +1,4 @@
-# [BETA] jsfour-core
+# [BETA] jsfour-core BUG TESTING
 
 ### Features
 * Use fetch() to fetch data directly from the server to the NUI.
