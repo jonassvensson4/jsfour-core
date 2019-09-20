@@ -10,10 +10,12 @@ Please don't sell or reupload this resource. Feel free to make forks and post an
 
 ### INSTALLATION
 * Install dependency: <a href="https://github.com/brouznouf/fivem-mysql-async">mysql-async</a>
-* <a href="https://github.com/jonassvensson4/jsfour-core/releases">Download the resource</a>
+* <a href="https://github.com/jonassvensson4/jsfour-core/">Download the resource</a>
 * Add your server IP + port to the <a href="https://github.com/jonassvensson4/jsfour-core/blob/master/config.js">config</a>.
-* Add `start jsfour-core` to your server.cfg, remember to start it before my other scripts.
+    * The external IP and port you use to connect to your server, the one visible in the server list. Not your localhost/127.0.0.1 etc
+* Add `start jsfour-core` to your server.cfg, remember to start it before my other resources.
 * It's recommended to run the resource once and then restart the server since it's generating some modules.
+    * If yarn decides to stop working I'm sorry but there's nothing I can do about it. If it won't download all the modules you could install the modules by using <a href="https://www.npmjs.com/get-npm">npm</a>. You'll find the modules to install in the <a href="https://github.com/jonassvensson4/jsfour-core/blob/master/package.json">package.json</a> under dependencies.
 
 ### SHARED FILES
 Notice: Everything in the shared folder will be publicly available, don't put any sensitive information in there.
@@ -25,13 +27,13 @@ To be able to use the fetch the client needs a session token and the endpoint th
 
 ```javascript
 onNet('jsfour-core:session', ( data ) => {
-    SendNuiMessage(JSON.stringify({
-        action: 'token',
-        token: data.token,
-        endpoint: data.endpoint,
-        esx: data.esx,
-        steam: data.steam
-    }));
+    // Ugly timeout needed, the SendNuiMessage function seems to break without it.
+    setTimeout(() => {
+        SendNuiMessage(JSON.stringify({
+            action: 'token',
+            data: data
+        })); 
+    }, 500);
 });
 ```
 
@@ -42,10 +44,16 @@ window.addEventListener('message', ( event ) => {
     
     switch( action ) {
         case 'token':
-            sessionToken = event.data.token;
-            endpoint = event.data.endpoint;
-            esxEnabled = event.data.esx;
-            steam = event.data.steam;
+            let d = event.data.data;
+
+            if ( Object.keys( d ).length > 0 ) {
+                sessionToken = d.token;
+                endpoint = d.endpoint;
+                esxEnabled = d.esx;
+                steam = d.steam;
+            } else {
+                console.error(`Data object is empty`);
+            }
             break;
     }
 });
