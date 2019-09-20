@@ -1,4 +1,5 @@
 module.exports = {
+    debug: false,
     endpoint: 'IP:PORT',
     gamemaster: {
         enabled: false,
