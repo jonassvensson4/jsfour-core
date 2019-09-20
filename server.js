@@ -13,15 +13,15 @@ let sessionTokens = {}
 RegisterNetEvent('jsfour-core:connected');
 RegisterNetEvent('jsfour-core:addQuery');
 
-// #### BETA STUFF
-// This will be removed eventually, keeping this incase people want to play around with it
-setTimeout(() => {
-    StopResource('jsfour-computer');
-    StartResource('jsfour-computer');
-}, 1000);
-
-sessionTokens['test'] = 'steam';
-// ####
+// Debugging, mainly used to use the fetch function from a non game client
+if ( config.debug ) {
+    setTimeout(() => {
+        StopResource('jsfour-computer');
+        StartResource('jsfour-computer');
+    }, 1000);
+    
+    sessionTokens['debug'] = 'steam:debug';
+}
 
 // Checks if the server has a higher artifact version than the one specified in the __resource.lua. Mainly used because of the globbing feature since some resources depends on it being available
 function ArtifactVersion( resource ) {
@@ -91,7 +91,8 @@ onNet('jsfour-core:connected', () => {
                 token: t,
                 endpoint: config.endpoint,
                 esx: HasESX(),
-                steam: GetPlayerIdentifier( source )
+                steam: GetPlayerIdentifier( source ),
+                debug: config.debug
             }
         
             emitNet( 'jsfour-core:session', source, data );
@@ -179,7 +180,7 @@ router.post('/:token/database/:type', async ( ctx ) => {
     // Checks if the request has any origin, every request might not have it and it will then log unnecessary errors in the console
     if ( ctx.request.headers.origin ) {
         // Checks if it's a request from the FiveM nui. nui://game is blocked since it's from the CEF debugger 
-        if ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) {
+        if ( ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) || config.debug ) {
             // Session token
             let token = ctx.params.token;
             // Name of the SQL object
@@ -220,7 +221,7 @@ router.post('/:token/database/:type', async ( ctx ) => {
                 }
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied - IP not found';
+                ctx.body = 'Access denied - user IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
@@ -240,14 +241,14 @@ router.post('/:token/emitNet/:job', async ( ctx ) => {
     // Checks if the request has any origin, every request might not have it and it will then log unnecessary errors in the console
     if ( ctx.request.headers.origin ) {
         // Checks if it's a request from the FiveM nui. nui://game is blocked since it's from the CEF debugger 
-        if ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) {
+        if ( ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) || config.debug ) {
             // Session token
             let token = ctx.params.token;
             // Name of the job
             let job = ctx.params.job;
 
             // Checks if the request ip is on the server by using the session token
-            if ( ctx.request.ip === sessionTokens[token] ) {
+            if ( ctx.request.ip.split(':')[0] === sessionTokens[token] || ctx.request.ip.includes('192.168.') || sessionTokens[token] === '127.0.0.1' ) {
                 // Checks if you want to send data to every client or a specific job
                 if ( job != 'all'  ) {
                     // To be able to send data to a speciifc job you need to have ESX installed
@@ -279,14 +280,16 @@ router.post('/:token/emitNet/:job', async ( ctx ) => {
                     } else {
                         // ESX isn't installed
                         console.error(`[jsfour-core] YOU CAN'T USE emitNet/${ job } SINCE YOU DON'T HAVE ESX INSTALLED.`);
+                        ctx.body = false;
                     }
                 } else {
                     // Sends data to every client on the server
                     emitNet('jsfour-core:toNUI', -1, JSON.parse( ctx.request.body ));
+                    ctx.body = true;
                 }
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied - IP not found';
+                ctx.body = 'Access denied - user IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
@@ -306,18 +309,18 @@ router.post('/:token/serverevent/:event', async ( ctx ) => {
     // Checks if the request has any origin, every request might not have it and it will then log unnecessary errors in the console
     if ( ctx.request.headers.origin ) {
         // Checks if it's a request from the FiveM nui. nui://game is blocked since it's from the CEF debugger 
-        if ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) {
+        if ( ( ctx.request.headers.origin.includes('nui://') && !ctx.request.headers.origin.includes('nui://game') ) || config.debug ) {
             // Session token
             let token = ctx.params.token;
             // Name of the event
             let event = ctx.params.event;
 
             // Checks if the request ip is on the server by using the session token
-            if ( ctx.request.ip === sessionTokens[token] ) {
+            if ( ctx.request.ip.split(':')[0] === sessionTokens[token] || ctx.request.ip.includes('192.168.') || sessionTokens[token] === '127.0.0.1' ) {
                 // Add your events in here
             } else {
                 // User is not on the server
-                ctx.body = 'Access denied - IP not found';
+                ctx.body = 'Access denied - user IP not found';
             }
         } else {
             // User  tried to access it from a non FiveM client or the CEF debugger
@@ -374,7 +377,7 @@ app.use(koaBody({
         multipart: true
     }))
     .use(router.routes())
-    .use(serve(`${GetResourcePath('jsfour-core')}/shared`))
-    .use(router.allowedMethods());
+    .use(router.allowedMethods())
+    .use(serve(`${GetResourcePath('jsfour-core')}/shared`));
     
 setHttpCallback(app.callback());
