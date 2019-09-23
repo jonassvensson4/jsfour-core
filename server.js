@@ -40,6 +40,8 @@ function ArtifactVersion( resource ) {
 function AddQuery( data ) {
     if ( data && typeof data === 'object' ) {
         Object.assign( config, data );
+    } else {
+        console.error('Tried to add a non object to the query object');
     }
 }
 
