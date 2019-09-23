@@ -77,30 +77,46 @@ onNet('jsfour-core:addQuery', ( data ) => {
 onNet('jsfour-core:connected', () => {
     let found = false;
 
-    Object.keys( sessionTokens ).forEach(( key, i ) => {
-        if ( sessionTokens[key] === GetPlayerEndpoint( source ) ) {
-            found = true;
-        } 
-
-        if ( !found && Object.keys(sessionTokens).length === i + 1 ) {
-            let t = generateToken(Math.floor(Math.random() * 10) + 8);
-
-            sessionTokens[t] = GetPlayerEndpoint( source );
-        
-            let data = {
-                token: t,
-                endpoint: config.endpoint,
-                esx: HasESX(),
-                steam: GetPlayerIdentifier( source ),
-                debug: config.debug
+    if ( Object.keys( sessionTokens ).length > 0 ) {
+        Object.keys( sessionTokens ).forEach(( key, i ) => {
+            if ( sessionTokens[key] === GetPlayerEndpoint( source ) ) {
+                found = true;
+            } 
+    
+            if ( !found && Object.keys(sessionTokens).length === i + 1 ) {
+                let t = generateToken(Math.floor(Math.random() * 10) + 8);
+    
+                sessionTokens[t] = GetPlayerEndpoint( source );
+            
+                let data = {
+                    token: t,
+                    endpoint: config.endpoint,
+                    esx: HasESX(),
+                    steam: GetPlayerIdentifier( source ),
+                    debug: config.debug
+                }
+            
+                emitNet( 'jsfour-core:session', source, data );
+            } else {
+                // TODO:
+                // Can multiple scripts run this event?
             }
-        
-            emitNet( 'jsfour-core:session', source, data );
-        } else {
-            // TODO:
-            // Can multiple scripts run this event?
+        });
+    } else {
+        let t = generateToken(Math.floor(Math.random() * 10) + 8);
+
+        sessionTokens[t] = GetPlayerEndpoint( source );
+    
+        let data = {
+            token: t,
+            endpoint: config.endpoint,
+            esx: HasESX(),
+            steam: GetPlayerIdentifier( source ),
+            debug: config.debug
         }
-    });
+    
+        emitNet( 'jsfour-core:session', source, data );
+    }
 });
 
 // Player dropped > remove the session token
