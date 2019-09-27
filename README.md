@@ -15,7 +15,10 @@ Please don't sell or reupload this resource. Feel free to make forks and post an
     * The external IP and port you use to connect to your server, the one visible in the server list. Not your localhost/127.0.0.1 etc
 * Add `start jsfour-core` to your server.cfg, remember to start it before my other resources.
 * It's recommended to run the resource once and then restart the server since it's generating some modules.
-    * If yarn decides to stop working I'm sorry but there's nothing I can do about it. If it won't download all the modules you could install the modules by using <a href="https://www.npmjs.com/get-npm">npm</a>. You'll find the modules to install in the <a href="https://github.com/jonassvensson4/jsfour-core/blob/master/package.json">package.json</a> under dependencies.
+   * If yarn decides to stop working try this:
+      1. Reinstall yarn
+      2. Restart your server and rerun in
+      3. If it won't download all the modules you could install the modules by using <a href="https://www.npmjs.com/get-npm">npm</a>. You'll find the modules to install in the <a href="https://github.com/jonassvensson4/jsfour-core/blob/master/package.json">package.json</a> under dependencies.
 
 ### SHARED FILES
 Notice: Everything in the shared folder will be publicly available, don't put any sensitive information in there.
