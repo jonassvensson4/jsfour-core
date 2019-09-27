@@ -6,8 +6,16 @@ const router = new Router();
 const koaBody = require('koa-body');
 const serve = require('koa-static');
 const render = require('koa-ejs');
+const fs = require('fs');
 let config = require('./config.js');
 let sessionTokens = {}
+
+fs.readdir(`${ GetResourcePath(GetCurrentResourceName()) }/node_modules`, ( err, files ) => {
+    if ( files.length < 83 ) {
+        console.error(`[${ resource }] MISSING MODULES - PLEASE RERUN THE SERVER OR USE NPM`);
+        emitNet('jsfour-core:error', -1, `[${ resource }] MISSING MODULES - PLEASE RERUN THE SERVER OR USE NPM`);
+    }
+});
 
 // Reigster server events
 RegisterNetEvent('jsfour-core:connected');
@@ -21,6 +29,7 @@ if ( config.debug ) {
     }, 1000);
     
     sessionTokens['debug'] = 'steam:debug';
+    console.warn('[jsfour-core] debug enabled')
 }
 
 // Checks if the server has a higher artifact version than the one specified in the __resource.lua. Mainly used because of the globbing feature since some resources depends on it being available
@@ -33,8 +42,11 @@ function ArtifactVersion( resource ) {
 
     if ( cv < rv ) {
         console.error(`[${ resource }] OUTDATED SERVER ARTIFACT | CURRENT VERSION: ${ current_version }| MINIMUM REQUIRED VERSION: ${ required_version } PLEASE UPDATED YOUR SERVER!`);
+        emitNet('jsfour-core:error', -1, `[${ resource }] OUTDATED SERVER ARTIFACT | CURRENT VERSION: ${ current_version }| MINIMUM REQUIRED VERSION: ${ required_version } PLEASE UPDATED YOUR SERVER!`);
     }
 }
+
+ArtifactVersion(GetCurrentResourceName());
 
 // Function to add queries to the query object. Called from other resources that uses this resource
 function AddQuery( data ) {
@@ -42,6 +54,7 @@ function AddQuery( data ) {
         Object.assign( config, data );
     } else {
         console.error('Tried to add a non object to the query object');
+        emitNet('jsfour-core:error', -1, 'Tried to add a non object to the query object');
     }
 }
 
@@ -55,8 +68,6 @@ function HasESX() {
 
     return started;
 }
-
-ArtifactVersion(GetCurrentResourceName());
 
 // Generates a session token, could also be used as a random string generator
 function generateToken( length ) {
@@ -298,6 +309,7 @@ router.post('/:token/emitNet/:job', async ( ctx ) => {
                     } else {
                         // ESX isn't installed
                         console.error(`[jsfour-core] YOU CAN'T USE emitNet/${ job } SINCE YOU DON'T HAVE ESX INSTALLED.`);
+                        emitNet('jsfour-core:error', -1, `YOU CAN'T USE emitNet/${ job } SINCE YOU DON'T HAVE ESX INSTALLED.`);
                         ctx.body = false;
                     }
                 } else {
