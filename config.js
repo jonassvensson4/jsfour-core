@@ -1,9 +1,4 @@
 module.exports = {
-    endpoint: 'IP:PORT',
-    gamemaster: {
-        enabled: false,
-        token: 'YOUR-PASSWORD'
-    },
     fetchNames: {
         sql: 'mysql_fetch_all',
         query: 'SELECT `identifier`, `firstname`, `lastname` FROM `users`'

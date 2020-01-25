@@ -1,4 +1,6 @@
-resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+fx_version 'adamant'
+
+game 'gta5'
 
 ui_page 'shared/index.html'
 
@@ -7,21 +9,20 @@ server_script {
 	'server.js'
 }
 
-client_script {
-	'client.js'
-}
+client_script 'client.js'
 
-dependencies { 
-	'yarn',
-	'mysql-async'
-}
+dependency 'mysql-async'
 
 artifact_version '1.0.0.1222'
+
+export 'serverCallback'
 
 server_exports {
     'ArtifactVersion',
 	'DependencyStarted',
-	'AddQuery'
+	'AddQuery',
+	'tempData',
+	'clientCallback'
 }
 
 files {
