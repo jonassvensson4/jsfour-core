@@ -22,7 +22,8 @@ server_exports {
 	'DependencyStarted',
 	'AddQuery',
 	'tempData',
-	'clientCallback'
+	'clientCallback',
+	'internalQueryCallback'
 }
 
 files {

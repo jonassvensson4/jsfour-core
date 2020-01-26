@@ -5,6 +5,8 @@ RegisterNetEvent('jsfour-core:addQuery');
 RegisterNetEvent('jsfour-core:query');
 RegisterNetEvent('jsfour-core:emitNet');
 RegisterNetEvent('jsfour-core:tempData');
+RegisterNetEvent('jsfour-core:executeQuery');
+RegisterNetEvent('jsfour-core:queryAnswer');
 
 // Temp data, removed on server restart
 let tempData = {
@@ -36,6 +38,22 @@ function clientCallback( name, player, data, cb ) {
 	
         let promise = new Promise(( resolve ) => {
             on(name, ( result ) => {
+                resolve(result);
+            });
+        });
+        
+        let result = await promise;
+        cb(result);
+    })();
+}
+
+// Server internal query callback, called from other server resources
+function internalQueryCallback( data, cb ) {
+    (async() => {
+        emit('jsfour-core:executeQuery', data);
+        
+        let promise = new Promise(( resolve ) => {
+            on('jsfour-core:queryAnswer', ( result ) => {
                 resolve(result);
             });
         });
@@ -93,6 +111,12 @@ async function executeQuery( sql, query, params ) {
     });
 }
 
+// Execute SQL query from a callback or other stuff
+on('jsfour-core:executeQuery', async ( data ) => {
+    let result = await executeQuery( data.sql, data.query, data.params );
+    emit('jsfour-core:queryAnswer', result);
+});
+
 // Check if value exists. (Only checks if it's an insert or update query. Fetch also needs to have the @uniqueValue param)
 async function valueExist( type, params ) {
     let table = config[type].query.split(' ');
@@ -104,7 +128,7 @@ async function valueExist( type, params ) {
     }
  
     if ( Object.keys( params ).length > 0 ) {
-        let result = await executeQuery( 'mysql_fetch_all', `SELECT * FROM ${ table } WHERE ${ params['@uniqueValue'].substr(1) } = "${ params[params['@uniqueValue']] }"`, {} );
+        let result = await executeQuery( 'mysql_fetch_all', `SELECT * FROM ${ table } WHERE ${ params['@uniqueValue'].substr(1) } = @unique`, { unique: params[params['@uniqueValue']] } );
 
         return result.length;
     } else {
