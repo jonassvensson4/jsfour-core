@@ -31,7 +31,7 @@ let tempData = {
 
 // Client callback
 function clientCallback( name, player, data, cb ) {
-    (async() => { 
+    (async() => {
         emitNet(name, player, data);
 	
         let promise = new Promise(( resolve ) => {
@@ -170,11 +170,8 @@ onNet('jsfour-core:query', async ( data ) => {
         // Not an insert/update query. Probably a select or a delete query
         let result = await executeQuery( config[data.type].sql, config[data.type].query, data.data );
 
-        // Check if the result is empty 
-        if ( ~result.length ) {
-            // Return the result
-            emitNet('jsfour-core:query', _source, result);
-        }
+        // Return the result
+        emitNet('jsfour-core:query', _source, result);
     }
 
     emitNet('jsfour-core:query', _source, false);
@@ -190,7 +187,7 @@ onNet('jsfour-core:emitNet', async ( data ) => {
             let result = await executeQuery( config['fetchIdByJob'].sql, config['fetchIdByJob'].query, { '@job' : data.job } );
 
             // Checks if it finds any users with that job in the database
-            if ( ~result.length ) {
+            if ( result.length > 0 ) {
                 let identifiers = {};
 
                 // Get all identifiers of all users who's online
