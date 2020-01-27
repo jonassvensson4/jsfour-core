@@ -7,6 +7,7 @@ RegisterNetEvent('jsfour-core:emitNet');
 RegisterNetEvent('jsfour-core:tempData');
 RegisterNetEvent('jsfour-core:executeQuery');
 RegisterNetEvent('jsfour-core:queryAnswer');
+RegisterNetEvent('jsfour-core:esxStatus');
 
 // Temp data, removed on server restart
 let tempData = {
@@ -98,6 +99,11 @@ function HasESX() {
 
     return started;
 }
+
+// Get the ESX status in a callback
+onNet('jsfour-core:esxStatus', () => {
+    emitNet('jsfour-core:esxStatus', source, HasESX());
+});
 
 // Execute SQL query
 async function executeQuery( sql, query, params ) {
