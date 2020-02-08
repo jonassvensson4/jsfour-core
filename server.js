@@ -60,7 +60,9 @@ function internalQueryCallback( data, cb ) {
         });
         
         let result = await promise;
-        cb(result);
+        setTimeout(() => {
+            cb(result);
+        }, 100);
     })();
 }
 
@@ -189,22 +191,22 @@ onNet('jsfour-core:query', async ( data ) => {
             if ( !await valueExist( data.type, data.data ) ) {
                 // No values found, insert/update it and return true
                 executeQuery( config[data.type].sql, config[data.type].query, data.data );
-                emitNet('jsfour-core:query', _source, true);
+                emitNet('jsfour-core:callback', _source, true, data.CallbackID);
             }
         } else {
             // No @unqueValue, just insert/update it withouth checking and return true
             executeQuery( config[data.type].sql, config[data.type].query, data.data );
-            emitNet('jsfour-core:query', _source, true);
+            emitNet('jsfour-core:callback', _source, true, data.CallbackID);
         }
     } else {
         // Not an insert/update query. Probably a select or a delete query
         let result = await executeQuery( config[data.type].sql, config[data.type].query, data.data );
 
         // Return the result
-        emitNet('jsfour-core:query', _source, result);
+        emitNet('jsfour-core:callback', _source, result, data.CallbackID);
     }
 
-    emitNet('jsfour-core:query', _source, false);
+    emitNet('jsfour-core:callback', _source, false, data.CallbackID);
 });
 
 // Send data to all clients or everyone who has a specified ESX job
