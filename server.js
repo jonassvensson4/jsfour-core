@@ -48,24 +48,6 @@ function clientCallback( name, player, data, cb ) {
     })();
 }
 
-// Server internal query callback, called from other server resources
-function internalQueryCallback( data, cb ) {
-    (async() => {
-        emit('jsfour-core:executeQuery', data);
-        
-        let promise = new Promise(( resolve ) => {
-            on('jsfour-core:queryAnswer', ( result ) => {
-                resolve(result);
-            });
-        });
-        
-        let result = await promise;
-        setTimeout(() => {
-            cb(result);
-        }, 100);
-    })();
-}
-
 // Checks if the server has a higher artifact version than the one specified in the __resource.lua. Mainly used because of the globbing feature since some resources depends on it being available
 function ArtifactVersion( resource ) {
     let current_version = GetConvar('version').substr(GetConvar('version').indexOf('v1') + 1, 11);
@@ -120,9 +102,9 @@ async function executeQuery( sql, query, params ) {
 }
 
 // Execute SQL query from a callback or other stuff
-on('jsfour-core:executeQuery', async ( data ) => {
+on('jsfour-core:executeQuery', async ( data, cb ) => {
     let result = await executeQuery( data.sql, data.query, data.params );
-    emit('jsfour-core:queryAnswer', result);
+    cb(result);
 });
 
 // Check if value exists. (Only checks if it's an insert or update query. Fetch also needs to have the @uniqueValue param)

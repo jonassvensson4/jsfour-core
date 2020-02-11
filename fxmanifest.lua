@@ -23,7 +23,6 @@ server_exports {
 	'AddQuery',
 	'tempData',
 	'clientCallback',
-	'internalQueryCallback',
 	'esxStatus'
 }
 
